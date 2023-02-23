@@ -1,2 +1,14 @@
 ---
-# tasks file for ntfy_ansible_role
+- name: Do preparatory work
+  ansible.builtin.include_tasks:
+    file: preparation/main.yml
+    apply:
+      tags: preparation_all
+  tags: preparation
+
+- name: Install and configure ntfy
+  ansible.builtin.include_tasks:
+    file: ntfy/main.yml
+    apply:
+      tags: ntfy
+  tags: ntfy
