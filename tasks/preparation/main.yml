@@ -1,1 +1,21 @@
 ---
+- name: Check variables for logical errors
+  ansible.builtin.include_tasks:
+    file: vars.yml
+    apply:
+      tags: vars
+  tags: vars
+
+- name: Set & check infos about the underlying platform (os & packages)
+  ansible.builtin.include_tasks:
+    file: platform.yml
+    apply:
+      tags: platform
+  tags: platform
+
+- name: Set & check infos about ntfy release
+  ansible.builtin.include_tasks:
+    file: ntfy_release.yml
+    apply:
+      tags: ntfy_release
+  tags: ntfy_release

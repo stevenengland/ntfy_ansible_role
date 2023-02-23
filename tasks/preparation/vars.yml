@@ -1,0 +1,8 @@
+---
+# Here is the place for variable assertions before the actual installation process
+
+- name: Assert binary architecture was detected
+  ansible.builtin.assert:
+    that: os_arch.release_binary_arch not in (None, omit)
+    msg: "Architecture not set!"
+  when: ntfy_installation_mode == "binary"
