@@ -1,2 +1,11 @@
 ---
-# vars file for ntfy_ansible_role
+# Vars that should not be altered by the role user
+
+ansible_version_minimum: "4.0.0"
+
+ntfy_installation_mode_package_supported_distros:
+  - Debian
+  - Ubuntu
+  - Fedora
+
+os_arch: "{{ lookup('ansible.builtin.template', [role_path, 'vars', 'architecture_map.yml'] | join('/')) | from_yaml }}"
