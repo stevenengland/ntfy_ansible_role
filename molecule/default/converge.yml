@@ -1,8 +1,11 @@
 ---
 - name: Converge
   hosts: all
-  gather_facts: false
+  any_errors_fatal: true
   tasks:
-    - name: "Include stevenengland.ntfy_ansible_role"
+    - name: Include stevenengland.ntfy
       ansible.builtin.include_role:
-        name: "stevenengland.ntfy_ansible_role"
+        name: "stevenengland.ntfy"
+      tags:
+        - preparation
+        - ntfy
