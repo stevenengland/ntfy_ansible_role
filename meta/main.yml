@@ -22,6 +22,10 @@ galaxy_info:
         - jammy
         - focal
 
+    - name: Fedora
+      versions:
+        - "36"
+
   galaxy_tags:
     - ntfy
     - ntfysh

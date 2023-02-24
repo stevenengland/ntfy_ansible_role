@@ -1,4 +1,15 @@
 ---
+- name: Enable ntfy services
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    masked: false
+    state: started
+  loop:
+    - ntfy.service
+  when: ntfy_system_systemd_used
+
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 

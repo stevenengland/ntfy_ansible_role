@@ -1,1 +1,8 @@
 ---
+- name: Check if webserver is up
+  ansible.builtin.uri:
+    url: http://localhost:80
+    status_code: [200, 302]
+    return_content: true
+  register: _landingpage
+  failed_when: "'<title>ntfy web</title>' not in _landingpage.content"

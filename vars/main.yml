@@ -19,9 +19,13 @@ ntfy_installation_mode_package_supported_distros:
   - Fedora
 
 ntfy_system_systemd_used: "{{ 'true' if (ntfy_installation_mode_binary_systemd_enabled or '\"package\" in ntfy_installation_mode') else 'false' }}"
+ntfy_system_group: ntfy
+ntfy_system_user: ntfy
 
 ntfy_version_minimum: 2.0.0
 
 os_arch: "{{ lookup('ansible.builtin.template', [role_path, 'vars', 'architecture_map.yml'] | join('/')) | from_yaml }}"
 
 release_binary_arch: "{{ os_arch.binary_arch_map[ansible_architecture] | default(None) }}"
+release_package_arch: "{{ os_arch.package_arch_map[ansible_architecture] | default(None) }}"
+release_package_ext: "{{ os_arch.os_family_package_extension_map[ansible_os_family] | default(None) }}"

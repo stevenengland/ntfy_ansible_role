@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  any_errors_fatal: true
+  tasks:
+    - name: Install latest version of stevenengland.ntfy
+      ansible.builtin.include_role:
+        name: "stevenengland.ntfy"

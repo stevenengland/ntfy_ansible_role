@@ -27,6 +27,20 @@
           tags: release
       tags: release
 
+- name: Pre configuration (package download installation)
+  when: >-
+    ntfy_installation_mode == "package_download" and
+    ( _ntfy_installation_strategy_upgrade
+    or
+    _ntfy_installation_strategy_fresh )
+  block:
+    - name: Install ntfy release
+      ansible.builtin.include_tasks:
+        file: release_package_download.yml
+        apply:
+          tags: release
+      tags: release
+
 - name: Create ntfy configuration
   ansible.builtin.include_tasks:
     file: configuration.yml

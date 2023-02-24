@@ -48,7 +48,27 @@
       until: _release_download_uri_response.status == 200
       retries: 5
 
-- name: Check for existing ntfy version file
+- name: Set and check download URL for package installation
+  when: ntfy_installation_mode == "package_download"
+  delegate_to: localhost
+  run_once: true
+  block:
+    - name: Set download link
+      ansible.builtin.set_fact:
+        _release_download_url: >
+          "https://github.com/binwiederhier/ntfy/releases/download/v{{ ntfy_version }}/ntfy_{{ ntfy_version }}_linux_{{ release_package_arch }}.{{ release_package_ext }}"
+
+    - name: Probe download link is valid
+      ansible.builtin.uri:
+        url: "{{ _release_download_url }}"
+        method: GET
+        status_code: 200
+        return_content: false
+      register: _release_download_uri_response
+      until: _release_download_uri_response.status == 200
+      retries: 5
+
+- name: Check for existing ntfy binary
   become: true
   ansible.builtin.stat:
     path: "{{ ntfy_dirs_installation }}/ntfy"

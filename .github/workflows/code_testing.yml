@@ -28,8 +28,12 @@ jobs:
           # https://github.com/geerlingguy/docker-ubuntu2204-ansible/issues/6
           # - ubuntu2204
           - ubuntu2004
+          - fedora37
+          - centos8
         molecule_scenario: [
-          default
+          default,
+          package_download,
+          upgrade
         ]
         include:
           - molecule_scenario: default
