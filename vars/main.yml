@@ -17,6 +17,8 @@ ntfy_installation_mode_package_supported_distros:
   - Debian
   - Ubuntu
   - Fedora
+  - RedHat
+  - CentOS
 
 ntfy_system_systemd_used: "{{ 'true' if (ntfy_installation_mode_binary_systemd_enabled or '\"package\" in ntfy_installation_mode') else 'false' }}"
 ntfy_system_group: ntfy
