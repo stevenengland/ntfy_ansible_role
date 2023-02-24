@@ -1,3 +1,8 @@
+| Status | Event |
+|---|---|
+| [![Code Testing](https://github.com/stevenengland/ntfy_ansible_role/actions/workflows/code_testing.yml/badge.svg?event=schedule)](https://github.com/stevenengland/ntfy_ansible_role/actions/workflows/code_testing.yml) | Weekly schedule |
+| [![Code Testing](https://github.com/stevenengland/ntfy_ansible_role/actions/workflows/code_testing.yml/badge.svg?event=pull_request)](https://github.com/stevenengland/ntfy_ansible_role/actions/workflows/code_testing.yml) | Last PR |
+
 Ansible role ntfy
 =========
 
