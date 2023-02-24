@@ -34,7 +34,7 @@
 - name: Download ntfy
   ansible.builtin.get_url:
     url: "{{ _release_download_url }}"
-    dest: "{{ _install_tempdir }}/package.file"
+    dest: "{{ _install_tempdir }}/package.{{ release_package_ext }}"
     mode: "0640"
   register: _downloaded_package
   until:
@@ -46,14 +46,14 @@
 - name: Install package
   become: true
   ansible.builtin.yum:
-    name: "{{ _install_tempdir }}/package.file"
-    state: present
+    name: "{{ _install_tempdir }}/package.{{ release_package_ext }}"
+    disable_gpg_check: true
   when: ansible_os_family == "RedHat"
 
 - name: Install package
   become: true
   ansible.builtin.apt:
-    deb: "{{ _install_tempdir }}/package.file"
+    deb: "{{ _install_tempdir }}/package.{{ release_package_ext }}"
   when: ansible_os_family == "Debian"
 
 - name: Remove temporary directory
