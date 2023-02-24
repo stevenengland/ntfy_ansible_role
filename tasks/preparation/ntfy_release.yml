@@ -1,1 +1,101 @@
 ---
+- name: Determine target version infos
+  when:
+    - ntfy_version == "latest"
+  delegate_to: localhost
+  run_once: true
+  block:
+    - name: Get latest release info from github
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/binwiederhier/ntfy/releases/latest"
+        method: GET
+        return_content: true
+        status_code: 200
+        body_format: json
+        headers:
+          Authorization: "{{ 'Bearer ' + github_public_repo_token if github_public_repo_token != '' else omit }}"
+      no_log: "{{ not lookup('env', 'MOLECULE_DEBUG') | bool }}"
+      register: _latest_release_api_response
+      until: _latest_release_api_response.status == 200
+      retries: 5
+
+    - name: "Set ntfy version to {{ _latest_release_api_response.json.tag_name[1:] }}"
+      ansible.builtin.set_fact:
+        ntfy_version: "{{ _latest_release_api_response.json.tag_name[1:] }}"
+
+- name: Fail if version is detected that is not supported
+  ansible.builtin.fail:
+    msg: Unsupported version detected. Please use a version >= {{ ntfy_version_minimum }}
+  when: ntfy_version is ansible.builtin.version(ntfy_version_minimum, '<', version_type='semver')
+  register: _exception
+
+- name: Set and check download URL for binary installation
+  when: ntfy_installation_mode == "binary"
+  delegate_to: localhost
+  run_once: true
+  block:
+    - name: Set download link
+      ansible.builtin.set_fact:
+        _release_download_url: "https://github.com/binwiederhier/ntfy/releases/download/v{{ ntfy_version }}/ntfy_{{ ntfy_version }}_linux_{{ release_binary_arch }}.tar.gz"
+
+    - name: Probe download link is valid
+      ansible.builtin.uri:
+        url: "{{ _release_download_url }}"
+        method: GET
+        status_code: 200
+        return_content: false
+      register: _release_download_uri_response
+      until: _release_download_uri_response.status == 200
+      retries: 5
+
+- name: Check for existing ntfy version file
+  become: true
+  ansible.builtin.stat:
+    path: "{{ ntfy_dirs_installation }}/.installed_version"
+  register: _ntfy_version_file_object
+
+- name: Set current installed version variable
+  when: _ntfy_version_file_object.stat.exists
+  block:
+    - name: Get the current installed version
+      become: true
+      ansible.builtin.command:
+        cmd: cat {{ ntfy_dirs_installation }}/.installed_version
+      register: _ntfy_version_installed_object
+      changed_when: _ntfy_version_installed_object.stdout != ntfy_version | string
+
+    - name: Set version of current installation as variable
+      ansible.builtin.set_fact:
+        _ntfy_installed_version: "{{ _ntfy_version_installed_object.stdout }}"
+
+- name: Set installation strategy  # noqa jinja[spacing]
+  ansible.builtin.set_fact:
+    _ntfy_installation_strategy_fresh: >-
+      {{ 'true' if not _ntfy_installed_version is defined else 'false' }}
+    _ntfy_installation_strategy_upgrade: >-
+      {{ 'true' if _ntfy_installed_version is defined and
+      _ntfy_installed_version is ansible.builtin.version(ntfy_version, '<', version_type='semver') else 'false' }}
+    _ntfy_installation_strategy_reconfigure: >-
+      {{ 'true' if _ntfy_installed_version is defined and
+      _ntfy_installed_version is ansible.builtin.version(ntfy_version, '==', version_type='semver') else 'false' }}
+    _ntfy_installation_strategy_downgrade: >-
+      {{ 'true' if _ntfy_installed_version is defined and
+      _ntfy_installed_version is ansible.builtin.version(ntfy_version, '>', version_type='semver') else 'false' }}
+
+- name: Print the current installation state detected
+  ansible.builtin.debug:
+    msg:
+      - "ntfy installed version:  {{ _ntfy_installed_version if _ntfy_installed_version is defined else '-' }}"
+      - "ntfy target version:     {{ ntfy_version }}"
+      - "-------------------------------"
+      - "Detected strategy:"
+      - "Fresh installation:               {{ _ntfy_installation_strategy_fresh }}"
+      - "Upgrade:                          {{ _ntfy_installation_strategy_upgrade }}"
+      - "Reconfiguration:                  {{ _ntfy_installation_strategy_reconfigure }}"
+      - "Downgrade:                        {{ _ntfy_installation_strategy_downgrade }}"
+
+- name: Fail if a downgrade is detected
+  ansible.builtin.fail:
+    msg: Downgrade detected - Downgrades are not allowed.
+  when: _ntfy_installation_strategy_downgrade
+  register: _exception

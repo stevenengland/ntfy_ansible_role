@@ -2,10 +2,15 @@
 # Vars that should not be altered by the role user
 
 ansible_version_minimum: "4.0.0"
+github_public_repo_token: "{{ lookup('env', 'GH_TOKEN') | default(omit) }}"
 
 ntfy_installation_mode_package_supported_distros:
   - Debian
   - Ubuntu
   - Fedora
 
+ntfy_version_minimum: 2.0.0
+
 os_arch: "{{ lookup('ansible.builtin.template', [role_path, 'vars', 'architecture_map.yml'] | join('/')) | from_yaml }}"
+
+release_binary_arch: "{{ os_arch.binary_arch_map[ansible_architecture] | default(None) }}"
