@@ -1,0 +1,37 @@
+---
+- name: Install package on Debian systems
+  when: ansible_os_family == 'Debian'
+  become: true
+  block:
+    - name: Install dependencies for repo installation
+      ansible.builtin.apt:
+        update_cache: true
+        pkg:
+          - apt-transport-https
+          - gnupg
+
+    - name: Get repo pubkey
+      ansible.builtin.uri:
+        url: https://archive.heckel.io/apt/pubkey.txt
+        status_code: [200, 302]
+        return_content: true
+      register: _repo_pubkey
+      until: _repo_pubkey.status == 200
+      retries: 5
+
+    - name: Make ntfy repo available to apt
+      ansible.builtin.shell:
+        cmd: echo "{{ _repo_pubkey.content }}" | gpg --dearmor --no-tty --yes -o /usr/share/keyrings/archive.heckel.io.gpg
+      register: _gpg_result
+      changed_when: _gpg_result.stdout != ""
+
+    - name: Add repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch={{ release_package_arch }} signed-by=/usr/share/keyrings/archive.heckel.io.gpg] https://archive.heckel.io/apt debian main"
+        state: present
+
+    - name: Install ntfy
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        pkg: ntfy={{ ntfy_version }}
