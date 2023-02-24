@@ -3,6 +3,7 @@
 
 - name: Assert binary architecture was detected
   ansible.builtin.assert:
-    that: os_arch.release_binary_arch not in (None, omit)
-    msg: "Architecture not set!"
+    that: release_binary_arch not in (None, omit)
+    fail_msg: "Release binary architecture not set!"
+    success_msg: Release binary architecture is {{ release_binary_arch }}
   when: ntfy_installation_mode == "binary"

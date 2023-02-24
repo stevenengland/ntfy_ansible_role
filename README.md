@@ -1,38 +1,48 @@
-Role Name
+| Status | Event |
+|---|---|
+| [![Code Testing](https://github.com/stevenengland/ntfy_ansible_role/actions/workflows/code_testing.yml/badge.svg?event=schedule)](https://github.com/stevenengland/ntfy_ansible_role/actions/workflows/code_testing.yml) | Weekly schedule |
+| [![Code Testing](https://github.com/stevenengland/ntfy_ansible_role/actions/workflows/code_testing.yml/badge.svg?event=pull_request)](https://github.com/stevenengland/ntfy_ansible_role/actions/workflows/code_testing.yml) | Last PR |
+
+Ansible role ntfy
 =========
 
-A brief description of the role goes here.
+Installs and configures ntfy (server) on linux systems.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+No special system requirements. `ansible_version_minimum: "4.0.0"` or newer is required.d.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+TBD
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+No dependencies
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+`minimal_runnable_playbook.yml`:
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```
+# Installs the latest version of ntfy with default values
+- hosts: all
+    become: yes
+    roles:
+        - { role: stevenengland.ntfy }
+```
+
+Contributing
+-------
+
+We encourage you to contribute to this role! Please check out the
+[contributing guide](CONTRIBUTE.md) for guidelines about how to proceed.
 
 License
 -------
 
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+MIT

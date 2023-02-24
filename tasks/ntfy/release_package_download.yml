@@ -1,0 +1,63 @@
+---
+- name: Check if tempdir exists
+  ansible.builtin.find:
+    paths: "{{ ntfy_dirs_tmp }}/"
+    patterns: "*tempgit_ntfy*"
+    file_type: directory
+  register: _install_tempdir_state
+
+- name: Create temporary directory if not exists
+  when: _install_tempdir_state.matched == 0
+  block:
+    - name: Create temporary directorys root path
+      ansible.builtin.file:
+        path: "{{ ntfy_dirs_tmp }}"
+        state: directory
+        mode: "750"
+
+    - name: Create target temporary directory
+      ansible.builtin.tempfile:
+        state: directory
+        path: "{{ ntfy_dirs_tmp }}/"
+        suffix: tempgit_ntfy
+      register: _install_tempdir_created
+
+- name: Determine temporary directory to use  # noqa jinja[spacing]
+  ansible.builtin.set_fact:
+    _install_tempdir: >-
+      {%- if _install_tempdir_created.path is defined -%}
+      {{ _install_tempdir_created.path }}
+      {%- else -%}
+      {{ _install_tempdir_state.files[0].path }}
+      {%- endif -%}
+
+- name: Download ntfy
+  ansible.builtin.get_url:
+    url: "{{ _release_download_url }}"
+    dest: "{{ _install_tempdir }}/package.{{ release_package_ext }}"
+    mode: "0640"
+  register: _downloaded_package
+  until:
+    - "not 'urlopen error' in _downloaded_package.msg | default('')"
+    - "not 'The read operation timed out' in _downloaded_package.msg | default('')"
+  retries: 3
+  delay: 60
+
+- name: Install package
+  become: true
+  ansible.builtin.yum:
+    name: "{{ _install_tempdir }}/package.{{ release_package_ext }}"
+    disable_gpg_check: true
+  when: ansible_os_family == "RedHat"
+
+- name: Install package
+  become: true
+  ansible.builtin.apt:
+    deb: "{{ _install_tempdir }}/package.{{ release_package_ext }}"
+  when: ansible_os_family == "Debian"
+
+- name: Remove temporary directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ _install_tempdir }}"
+    state: absent

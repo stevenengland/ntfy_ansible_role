@@ -6,4 +6,13 @@ binary_arch_map:
   armv7l: 'armv7'
   armv6l: 'armv6'
 
-release_binary_arch: "{{ binary_arch_map[ansible_architecture] | default(None) }}"
+package_arch_map:
+  i386: 'amd64'
+  x86_64: 'amd64'
+  aarch64: 'arm64'
+  armv7l: 'armv7'
+  armv6l: 'armv6'
+
+os_family_package_extension_map:
+  Debian: "deb"
+  RedHat: "rpm"

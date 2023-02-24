@@ -1,5 +1,16 @@
 ---
 # Variables that the role user is supposed to change
 
+ntfy_config_mode: dict  # template|dict
+ntfy_config_dict:
+  base-url: "http://localhost"
+  cache-file: "{{ ntfy_dirs_cache }}/cache.db"
+  attachment-cache-dir: "{{ ntfy_dirs_attachment }}"
+ntfy_config_template:
 ntfy_installation_mode: binary  # package_repo|package_download|binary
 ntfy_installation_mode_binary_systemd_enabled: true
+
+ntfy_system_group_gid:
+
+ntfy_system_user_uid:
+ntfy_version: latest  # latest|major.minor.patch (e.g. 2.0.1)

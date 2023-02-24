@@ -1,0 +1,13 @@
+---
+- name: Converge
+  hosts: all
+  any_errors_fatal: true
+  tasks:
+    - name: Include stevenengland.ntfy
+      ansible.builtin.include_role:
+        name: "stevenengland.ntfy"
+      tags:
+        - preparation
+        - ntfy
+      vars:
+        ntfy_installation_mode: package_download

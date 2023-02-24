@@ -10,9 +10,7 @@
   ansible.builtin.assert:
     that: ansible_service_mgr == 'systemd'
     msg: "This role only works with systemd if you enabled system support. See the Readme for more information."
-  when: |
-    ntfy_installation_mode_binary_systemd_enabled or
-    '"package" in ntfy_installation_mode'
+  when: ntfy_system_systemd_used
 
 - name: Verify Ansible meets version requirements
   block:

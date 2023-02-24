@@ -1,0 +1,28 @@
+---
+- name: Enable ntfy services
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    masked: false
+    state: started
+  loop:
+    - ntfy.service
+  when: ntfy_system_systemd_used
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Check systemd status
+  when: ntfy_system_systemd_used
+  block:
+    - name: Collect facts about system services
+      become: true
+      ansible.builtin.service_facts:
+      register: _services_state
+
+    - name: Check that all services are running
+      ansible.builtin.assert:
+        that: _services_state.ansible_facts.services["{{ item }}"].state == 'running'
+      loop:
+        - "ntfy.service"

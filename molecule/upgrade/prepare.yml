@@ -1,0 +1,14 @@
+---
+- name: Prepare
+  hosts: all
+  any_errors_fatal: true
+  tasks:
+    - name: Prepare the installation with default preparation
+      ansible.builtin.include_tasks:
+        file: ../default_preparation.yml
+
+    - name: Install an older than latest version of ntfy
+      ansible.builtin.include_role:
+        name: "stevenengland.ntfy"
+      vars:
+        ntfy_version: "{{ ntfy_version_minimum }}"

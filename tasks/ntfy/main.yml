@@ -1,1 +1,72 @@
 ---
+- name: Pre configuration (binary installation)
+  when: >-
+    ntfy_installation_mode == "binary" and
+    ( _ntfy_installation_strategy_upgrade
+    or
+    _ntfy_installation_strategy_fresh )
+  block:
+    - name: Add paperless-ngx system user(s) and group(s)
+      ansible.builtin.include_tasks:
+        file: system_user.yml
+        apply:
+          tags: system_user
+      tags: system_user
+
+    - name: Create ntfy directories
+      ansible.builtin.include_tasks:
+        file: directories.yml
+        apply:
+          tags: directories
+      tags: directories
+
+    - name: Get ntfy release
+      ansible.builtin.include_tasks:
+        file: release_binary.yml
+        apply:
+          tags: release
+      tags: release
+
+- name: Pre configuration (package download installation)
+  when: >-
+    ntfy_installation_mode == "package_download" and
+    ( _ntfy_installation_strategy_upgrade
+    or
+    _ntfy_installation_strategy_fresh )
+  block:
+    - name: Install ntfy release
+      ansible.builtin.include_tasks:
+        file: release_package_download.yml
+        apply:
+          tags: release
+      tags: release
+
+- name: Create ntfy configuration
+  ansible.builtin.include_tasks:
+    file: configuration.yml
+    apply:
+      tags: configuration
+  tags: configuration
+
+- name: Post configuration
+  when: >-
+    _ntfy_installation_strategy_upgrade
+    or
+    _ntfy_installation_strategy_fresh
+  block:
+    - name: Deploy and activate systemd service units
+      ansible.builtin.include_tasks:
+        file: systemd_services.yml
+        apply:
+          tags: systemd_services
+      tags: systemd_services
+      when:
+        - ntfy_installation_mode == "binary"
+        - ntfy_installation_mode_binary_systemd_enabled
+
+- name: Finalize paperless-ngx installation
+  ansible.builtin.include_tasks:
+    file: finalize.yml
+    apply:
+      tags: finalize
+  tags: finalize

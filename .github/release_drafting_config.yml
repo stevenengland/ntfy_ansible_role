@@ -2,7 +2,7 @@
 name-template: '$RESOLVED_VERSION 🌈'
 tag-template: '$RESOLVED_VERSION'
 template: |
-  ## paperless-ngx ansible role $RESOLVED_VERSION
+  ## ntfy ansible role $RESOLVED_VERSION
 
   $CHANGES
 

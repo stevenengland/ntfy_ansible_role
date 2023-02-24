@@ -1,0 +1,15 @@
+[Unit]
+Description=ntfy server
+After=network.target
+
+[Service]
+User={{ ntfy_system_user }}
+Group={{ ntfy_system_group }}
+ExecStart={{ ntfy_dirs_installation }}/ntfy serve --no-log-dates
+ExecReload=/bin/kill --signal HUP $MAINPID
+Restart=on-failure
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+LimitNOFILE=10000
+
+[Install]
+WantedBy=multi-user.target
