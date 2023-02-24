@@ -55,7 +55,7 @@
   block:
     - name: Set download link
       ansible.builtin.set_fact:
-        _release_download_url: >
+        _release_download_url: >-
           "https://github.com/binwiederhier/ntfy/releases/download/v{{ ntfy_version }}/ntfy_{{ ntfy_version }}_linux_{{ release_package_arch }}.{{ release_package_ext }}"
 
     - name: Probe download link is valid
