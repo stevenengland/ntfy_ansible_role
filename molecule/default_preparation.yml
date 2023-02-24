@@ -5,3 +5,11 @@
     upgrade: dist
     state: latest
     update_cache: true
+  when: ansible_os_family == "Debian"
+
+- name: Update all packages to the latest version
+  become: true
+  ansible.builtin.yum:  # noqa package-latest
+    state: latest
+    update_cache: true
+  when: ansible_os_family == "RedHat"
