@@ -26,6 +26,10 @@ galaxy_info:
       versions:
         - "36"
 
+    - name: EL
+      versions:
+        - "8"
+
   galaxy_tags:
     - ntfy
     - ntfysh
