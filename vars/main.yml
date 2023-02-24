@@ -4,10 +4,21 @@
 ansible_version_minimum: "4.0.0"
 github_public_repo_token: "{{ lookup('env', 'GH_TOKEN') | default(omit) }}"
 
+ntfy_config_file: "{{ ntfy_dirs_config }}/server.yml"
+
+ntfy_dirs_attachment: "{{ ntfy_dirs_cache }}/attachments"
+ntfy_dirs_cache: /var/cache/ntfy
+ntfy_dirs_config: /etc/ntfy
+ntfy_dirs_data: /var/lib/ntfy
+ntfy_dirs_installation: /usr/bin
+ntfy_dirs_tmp: /tmp/ntfy
+
 ntfy_installation_mode_package_supported_distros:
   - Debian
   - Ubuntu
   - Fedora
+
+ntfy_system_systemd_used: "{{ 'true' if (ntfy_installation_mode_binary_systemd_enabled or '\"package\" in ntfy_installation_mode') else 'false' }}"
 
 ntfy_version_minimum: 2.0.0
 

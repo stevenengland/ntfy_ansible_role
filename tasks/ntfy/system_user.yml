@@ -1,0 +1,16 @@
+---
+- name: Create ntfy system group
+  become: true
+  ansible.builtin.group:
+    name: "{{ ntfy_system_group }}"
+    gid: "{{ omit if ntfy_system_group_gid in (None, omit) else ntfy_system_group_gid }}"
+
+- name: Create ntfy system user
+  become: true
+  ansible.builtin.user:
+    name: "{{ ntfy_system_user }}"
+    uid: "{{ omit if ntfy_system_user_uid in (None, omit) else ntfy_system_user_uid }}"
+    groups:
+      - "{{ ntfy_system_group }}"
+    shell: /usr/sbin/nologin
+    create_home: false

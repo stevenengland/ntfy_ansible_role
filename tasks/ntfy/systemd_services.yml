@@ -1,0 +1,17 @@
+---
+- name: Create the systemd service file from template
+  become: true
+  ansible.builtin.template:
+    src: ntfy.service.j2
+    dest: /lib/systemd/system/ntfy.service
+    mode: "0640"
+
+- name: Enable ntfy services
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    masked: false
+    state: started
+  loop:
+    - ntfy.service

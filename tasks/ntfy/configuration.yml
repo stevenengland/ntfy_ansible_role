@@ -1,0 +1,22 @@
+---
+- name: Create the config file from role variable  # noqa: jinja[invalid]  # maybe https://github.com/ansible/ansible-lint/issues/3082
+  become: true
+  ansible.builtin.copy:
+    dest: "{{ ntfy_config_file }}"
+    content: "{{ ntfy_config_dict | to_nice_yaml }}"
+    owner: "{{ ntfy_system_user }}"
+    group: "{{ ntfy_system_group }}"
+    mode: "0600"
+  when: ntfy_config_mode == "dict"
+  notify: Restart ntfy
+
+- name: Create the config file from template
+  become: true
+  ansible.builtin.template:
+    src: "{{ ntfy_config_template }}"
+    dest: "{{ ntfy_config_file }}"
+    owner: "{{ ntfy_system_user }}"
+    group: "{{ ntfy_system_group }}"
+    mode: "0600"
+  when: ntfy_config_mode == "template"
+  notify: Restart ntfy

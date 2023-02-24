@@ -1,0 +1,20 @@
+---
+- name: Create ntfy directories and set permissions
+  become: true
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ ntfy_system_user if item.set_permission else omit }}"
+    group: "{{ ntfy_system_group if item.set_permission else omit }}"
+    mode: '{{ "0700" if item.set_permission else omit }}'
+  loop:
+    - path: "{{ ntfy_dirs_installation }}"
+      set_permission: false
+    - path: "{{ ntfy_dirs_data }}"
+      set_permission: true
+    - path: "{{ ntfy_dirs_config }}"
+      set_permission: true
+    - path: "{{ ntfy_dirs_cache }}"
+      set_permission: true
+    - path: "{{ ntfy_dirs_attachment }}"
+      set_permission: true

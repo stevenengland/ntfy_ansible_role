@@ -1,2 +1,10 @@
 ---
-# handlers file for ntfy_ansible_role
+- name: Restart ntfy
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: "{{ item }}"
+    state: restarted
+  loop:
+    - ntfy.service
+  when: ntfy_system_systemd_used

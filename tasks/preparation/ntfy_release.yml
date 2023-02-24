@@ -51,7 +51,7 @@
 - name: Check for existing ntfy version file
   become: true
   ansible.builtin.stat:
-    path: "{{ ntfy_dirs_installation }}/.installed_version"
+    path: "{{ ntfy_dirs_installation }}/ntfy"
   register: _ntfy_version_file_object
 
 - name: Set current installed version variable
@@ -60,13 +60,14 @@
     - name: Get the current installed version
       become: true
       ansible.builtin.command:
-        cmd: cat {{ ntfy_dirs_installation }}/.installed_version
+        cmd: "{{ ntfy_dirs_installation }}/ntfy serve --listen-http :123456"
       register: _ntfy_version_installed_object
-      changed_when: _ntfy_version_installed_object.stdout != ntfy_version | string
+      changed_when: false
+      failed_when: _ntfy_version_installed_object.stderr is not regex('ntfy (\d+\.\d+\.\d+)', ignorecase=true)
 
     - name: Set version of current installation as variable
       ansible.builtin.set_fact:
-        _ntfy_installed_version: "{{ _ntfy_version_installed_object.stdout }}"
+        _ntfy_installed_version: "{{ _ntfy_version_installed_object.stderr | regex_search('ntfy (\\d+\\.\\d+\\.\\d+)', '\\1') | first }}"
 
 - name: Set installation strategy  # noqa jinja[spacing]
   ansible.builtin.set_fact:
