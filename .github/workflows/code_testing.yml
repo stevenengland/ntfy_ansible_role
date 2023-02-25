@@ -33,6 +33,7 @@ jobs:
         molecule_scenario: [
           default,
           package_download,
+          package_repo,
           upgrade
         ]
         include:
