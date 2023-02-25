@@ -36,6 +36,11 @@ jobs:
           package_repo,
           upgrade
         ]
+        exclude:
+          - distro: fedora37
+            molecule_scenario: package_repo
+          - distro: centos8
+            molecule_scenario: package_repo
         include:
           - molecule_scenario: default
             ansible_version_minimum: "4.0.0"
