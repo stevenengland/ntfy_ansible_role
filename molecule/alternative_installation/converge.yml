@@ -1,0 +1,13 @@
+---
+- name: Converge
+  hosts: all
+  any_errors_fatal: true
+  tasks:
+    - name: Include stevenengland.ntfy
+      ansible.builtin.include_role:
+        name: "stevenengland.ntfy"
+      vars:
+        ntfy_config_mode: template
+        ntfy_config_template: files/server.yml.j2
+        ntfy_system_group_gid: 1001
+        ntfy_system_user_uid: 1001
