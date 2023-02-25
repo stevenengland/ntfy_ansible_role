@@ -7,3 +7,10 @@
     fail_msg: "Release binary architecture not set!"
     success_msg: Release binary architecture is {{ release_binary_arch }}
   when: ntfy_installation_mode == "binary"
+
+- name: Check if installation mode is supported
+  ansible.builtin.assert:
+    that: ansible_os_family == 'Debian'
+    fail_msg: The chosen installation mode ({{ ntfy_installation_mode }}) is not supported for this distro ({{ ansible_distribution }}).
+    success_msg: The installation mode is supported.
+  when: ntfy_installation_mode == "package_repo"
