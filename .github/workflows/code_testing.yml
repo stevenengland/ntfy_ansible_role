@@ -74,7 +74,7 @@ jobs:
           python3 -m pip install -r .github/workflows/requirements.txt -c .github/workflows/constraints.txt
           molecule --version
           docker --version
-          ansible-galaxy install -r requirements.yml
+          ansible-galaxy install --timeout 120 --verbose -r requirements.yml
           ansible-galaxy collection list
 
       - if: ${{ matrix.ansible_version_minimum }}
