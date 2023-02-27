@@ -84,6 +84,12 @@ ntfy_system_user_uid: true
 ```
 If you wish you can define a custom gid for the user `ntfy`.
 
+---
+```yaml
+ntfy_system_user_additional_groups: []
+```
+Optionally add the user `ntfy` to more groups. For example to read TLS certificates that can be read by the group `ssl-cert`.
+
 Dependencies
 ------------
 

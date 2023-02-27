@@ -11,3 +11,5 @@
         ntfy_config_template: files/server.yml.j2
         ntfy_system_group_gid: 1001
         ntfy_system_user_uid: 1001
+        ntfy_system_user_additional_groups:
+          - root
