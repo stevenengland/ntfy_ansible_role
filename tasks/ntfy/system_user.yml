@@ -10,14 +10,8 @@
   ansible.builtin.user:
     name: "{{ ntfy_system_user }}"
     uid: "{{ omit if ntfy_system_user_uid in (None, omit) else ntfy_system_user_uid }}"
-    groups:
-      - "{{ ntfy_system_group }}"
-    shell: /usr/sbin/nologin
-    create_home: false
-
-- name: Adding secondary group(s) to system user
-  become: true
-  ansible.builtin.user:
-    name: "{{ ntfy_system_user }}"
+    group: "{{ ntfy_system_group }}"
     groups: "{{ ntfy_system_user_additional_groups }}"
     append: true
+    shell: /usr/sbin/nologin
+    create_home: false
