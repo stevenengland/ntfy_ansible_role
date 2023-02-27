@@ -14,10 +14,12 @@
 
 - name: Verify Ansible meets version requirements
   block:
-    - name: Check version of ansible package
+    - name: Check version of ansible package on the controller node
       ansible.builtin.shell: python3 -m pip show ansible | grep Version | cut -d ' ' -f 2
       changed_when: false
       register: _ansible_installed_version
+      delegate_to: localhost
+      run_once: true
 
     - name: Compare versions of installed ansible and required ansible
       ansible.builtin.assert:
