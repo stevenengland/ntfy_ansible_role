@@ -3,8 +3,12 @@
   ansible.builtin.include_tasks:
     file: preparation/main.yml
     apply:
-      tags: preparation_all
-  tags: preparation
+      tags:
+        - preparation_all
+        - always  # can be slipped by '--skip-tags always' if needed for some reason
+  tags:
+    - preparation
+    - always
 
 - name: Install and configure ntfy
   ansible.builtin.include_tasks:
