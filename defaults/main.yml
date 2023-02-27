@@ -11,6 +11,7 @@ ntfy_installation_mode: binary  # package_repo|package_download|binary
 ntfy_installation_mode_binary_systemd_enabled: true
 
 ntfy_system_group_gid:
+ntfy_system_user_additional_groups: []
 ntfy_system_user_uid:
 
 ntfy_version: latest  # latest|major.minor.patch (e.g. 2.0.1)
