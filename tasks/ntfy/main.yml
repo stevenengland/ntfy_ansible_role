@@ -62,21 +62,15 @@
       tags: configuration
   tags: configuration
 
-- name: Post configuration
-  when: >-
-    _ntfy_installation_strategy_upgrade
-    or
-    _ntfy_installation_strategy_fresh
-  block:
-    - name: Deploy and activate systemd service units
-      ansible.builtin.include_tasks:
-        file: systemd_services.yml
-        apply:
-          tags: systemd_services
+- name: Deploy and activate systemd service units
+  ansible.builtin.include_tasks:
+    file: systemd_services.yml
+    apply:
       tags: systemd_services
-      when:
-        - ntfy_installation_mode == "binary"
-        - ntfy_installation_mode_binary_systemd_enabled
+  tags: systemd_services
+  when:
+    - ntfy_installation_mode == "binary"
+    - ntfy_installation_mode_binary_systemd_enabled
 
 - name: Finalize paperless-ngx installation
   ansible.builtin.include_tasks:
