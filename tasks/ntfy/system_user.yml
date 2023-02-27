@@ -14,3 +14,10 @@
       - "{{ ntfy_system_group }}"
     shell: /usr/sbin/nologin
     create_home: false
+
+- name: Adding secondary group(s) to system user
+  become: true
+  ansible.builtin.user:
+    name: "{{ ntfy_system_user }}"
+    groups: "{{ ntfy_system_user_additional_groups }}"
+    append: true
