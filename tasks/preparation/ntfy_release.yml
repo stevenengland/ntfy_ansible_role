@@ -37,7 +37,11 @@
     - name: Set download link
       ansible.builtin.set_fact:
         _release_download_url: "https://github.com/binwiederhier/ntfy/releases/download/v{{ ntfy_version }}/ntfy_{{ ntfy_version }}_linux_{{ release_binary_arch }}.tar.gz"
-
+      when: ntfy_version is version('2.6.1', '>=') 
+    - name: Set download link
+      ansible.builtin.set_fact:
+        _release_download_url: "https://github.com/binwiederhier/ntfy/releases/download/v{{ ntfy_version }}/ntfy_{{ ntfy_version }}_linux_{{ release_binary_arch_old }}.tar.gz"
+      when: ntfy_version is version('2.6.1', '<') 
     - name: Probe download link is valid
       ansible.builtin.uri:
         url: "{{ _release_download_url }}"
